@@ -1,10 +1,8 @@
 #include <algorithm>
 #include <iostream>
-#include <string>
 #include <fstream>
+#include <string>
 #include <vector>
-
-#include <ctype.h>
 
 int main()
 {
@@ -37,5 +35,5 @@ int main()
         }
         ret += 10 * first_digit + last_digit;
     }
-    std::cout << ret;
+    std::cout << ret << '\n';
 }
