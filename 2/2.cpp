@@ -1,32 +1,27 @@
 #include <iostream>
-#include <fstream>
-#include <unordered_map>
-#include <sstream>
 #include <string>
-
-std::unordered_map<char, int> maxs = { { 'r', 12 }, { 'g', 13 }, { 'b', 14 } };
 
 int main()
 {
-    int ans = 0;
-    std::ifstream file("input.txt");
-    for (std::string line; std::getline(file, line); ) {
-        std::istringstream record(line);
-
-        std::string skip;
-        int id;
-        record >> skip >> id >> skip;
+    long long ans = 0;
+    for (std::string skip; std::cin >> skip; ) {
+        long long id;
+        std::cin >> id >> skip;
 
         bool correct = true;
-        std::string color;
-        for (int cnt; record >> cnt; ) {
-            record >> color;
-            if (cnt > maxs[color[0]]) {
-                correct = false;
-                break;
+        for (int cnt; std::cin >> cnt; ) {
+            std::string color;
+            std::cin >> color;
+            int max_balls;
+            switch (color[0]) {
+                case 'r': max_balls = 12; break;
+                case 'g': max_balls = 13; break;
+                case 'b': max_balls = 14; break;
             }
+            correct = correct && cnt <= max_balls;
         }
-        if (correct) ans += id;
+        std::cin.clear();
+        ans += correct ? id : 0;
     }
     std::cout << ans << '\n';
 }
