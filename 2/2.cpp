@@ -10,9 +10,11 @@ int main()
     for (std::string line; std::getline(file, line); ) {
         line.push_back('.');
         std::istringstream record(line);
+
         std::string skip;
         int id;
         record >> skip >> id >> skip;
+        
         bool correct = true;
         std::string color;
         for (int cnt; record >> cnt; ) {
