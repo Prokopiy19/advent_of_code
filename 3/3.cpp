@@ -2,7 +2,6 @@
 #include <cctype>
 #include <iostream>
 #include <string>
-#include <utility>
 #include <vector>
 
 std::vector<std::string> scheme;

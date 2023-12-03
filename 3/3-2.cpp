@@ -1,20 +1,12 @@
 #include <charconv>
 #include <cctype>
 #include <iostream>
-#include <iterator>
 #include <optional>
 #include <string>
-#include <utility>
 #include <vector>
 
 std::vector<std::string> scheme;
 int m, n;
-
-inline
-bool is_digit(int i, int j)
-{
-    return 0 <= i && i < m && 0 <= j && j < n && std::isdigit(scheme[i][j]);
-}
 
 struct Number {
     int i, l, r;
@@ -27,7 +19,7 @@ std::optional<Number> get_number(int i, int j)
         while (1 <= l && std::isdigit(scheme[i][l-1])) --l;
         while (r < n && std::isdigit(scheme[i][r])) ++r;
         std::optional<Number> ret;
-        ret.emplace(Number{i, l, r});
+        ret.emplace(i, l, r);
         return ret;
     }
     else {
