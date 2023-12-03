@@ -34,7 +34,7 @@ std::vector<Number> find_numbers(int i, int j)
         for (int jj = j - 1; jj <= j + 1; ) {
             if (auto number = get_number(ii, jj)) {
                 ret.emplace_back(*number);
-                jj = number->r;
+                jj = number->r + 1;
             }
             else {
                 ++jj;

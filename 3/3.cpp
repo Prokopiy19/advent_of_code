@@ -49,7 +49,7 @@ int main()
                 std::from_chars(scheme[i].c_str() + l, scheme[i].c_str() + r, add);
                 ret += add;
             }
-            l = (l == r) ? r + 1 : r;
+            l = r + 1;
         }
     std::cout << ret << '\n';
 }
