@@ -21,10 +21,10 @@ HandType hand_type(const string_view s) {
         int jcnt = it->second;
         if (jcnt == 5) return five;
         cnts.erase(it);
-        it = cnts.begin();
-        for (auto jt = cnts.begin(); jt != cnts.end(); ++jt)
-            if (jt->second > it->second) it = jt;
-        it->second += jcnt;
+        auto max_it = cnts.begin();
+        for (it = cnts.begin(); it != cnts.end(); ++it)
+            if (it->second > max_it->second) max_it = it;
+        max_it->second += jcnt;
     }
     switch (cnts.size()) {
         case 1: return five;
