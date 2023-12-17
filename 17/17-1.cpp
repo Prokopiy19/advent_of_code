@@ -9,7 +9,7 @@ enum Dir {
     UP, LEFT, DOWN, RIGHT,
 };
 
-using Cell = array<array<int, 3>, 4>;
+using Cell = array<array<int, 4>, 4>;
 
 struct QueueEntry {
     int dist;
@@ -59,7 +59,8 @@ int main()
                 fill(dir.begin(), dir.end(), INT_MAX);
             }
     priority_queue<QueueEntry> q;
-    q.emplace(-b[0][0], 0, 0, LEFT, 0);
+    q.emplace(-b[0][0], 0, 0, DOWN, 3);
+    q.emplace(-b[0][0], 0, 0, RIGHT, 3);
     while (q.empty() == false) {
         auto [dist, r, c, dir, moves] = q.top();
         q.pop();
