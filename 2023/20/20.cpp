@@ -1,5 +1,7 @@
 #include <algorithm>
+#include <fstream>
 #include <iostream>
+#include <map>
 #include <queue>
 #include <sstream>
 #include <string>
@@ -9,28 +11,35 @@
 
 using namespace std;
 
-struct Module {
-    char type;
-    vector<string> cables;
-    bool on;
-    unordered_map<string, bool> mem;
-};
-
 struct Pulse {
-    bool high;
+    enum Type {
+        kLow, kHigh,
+    } type;
     string from, to;
 };
 
-int cnt_high = 0, cnt_low = 0;
+struct Module {
+    char type = 'a';
+    vector<string> cables;
+    bool on = false;
+    unordered_map<string, Pulse::Type> mem;
+    int high_count = 0;
+};
 
-void send_pulses(queue<Pulse>& q, const Module& module, const string& from, bool high)
+unsigned long long cnt_high = 0, cnt_low = 0;
+
+void send_pulses(queue<Pulse>& q, const Module& module, const string& from, Pulse::Type type)
 {
-    int& cnt = (high) ? cnt_high : cnt_low;
+    auto& cnt = (type == Pulse::kHigh) ? cnt_high : cnt_low;
     for (const auto& to : module.cables) {
         // cout << from << " -" << (high ? "high" : "low") << "-> " << to << '\n';
         ++cnt;
-        q.emplace(high, from, to);
+        q.emplace(type, from, to);
     }
+}
+
+string enclose(string name) {
+    return '"' + name + '"';
 }
 
 int main()
@@ -57,13 +66,19 @@ int main()
         for (const auto& to : input.cables) {
             auto& module = modules[to];
             if (module.type == '&') {
-                module.mem.emplace(s, false);
+                module.mem.emplace(s, Pulse::kLow);
             }
         }
     }
+    map<string, vector<int>> tracking {
+        {"pm", {}},
+        {"mk", {}},
+        {"pk", {}},
+        {"hf", {}},
+    };
     queue<Pulse> q;
-    for (int i = 0; i < 1000; ++i) {
-        q.emplace(false, "", "broadcaster");
+    for (int i = 0; i < 200; ++i) {
+        q.emplace(Pulse::kLow, "", "broadcaster");
         ++cnt_low;
         while (!q.empty()) {
             auto pulse = q.front();
@@ -71,27 +86,77 @@ int main()
             auto& module = modules[pulse.to];
             switch (module.type) {
                 case '%': {
-                    if (pulse.high == false) {
+                    if (pulse.type == Pulse::kLow) {
                         module.on = !module.on;
-                        send_pulses(q, module, pulse.to, module.on);
+                        send_pulses(q, module, pulse.to, (module.on) ? Pulse::kHigh : Pulse::kLow);
                     }
                     break;
                 }
                 case '&': {
-                    module.mem[pulse.from] = pulse.high;
-                    if (all_of(module.mem.cbegin(), module.mem.cend(), [](const auto& e){ return e.second; })) {
-                        send_pulses(q, module, pulse.to, false);
+                    auto itmem = module.mem.find(pulse.from);
+                    if (itmem->second != pulse.type) {
+                        if (pulse.type == Pulse::kHigh) {
+                            ++module.high_count;
+                        }
+                        else {
+                            --module.high_count;
+                        }
+                        itmem->second = pulse.type;
+                    }
+                    if (module.high_count == module.mem.size()) {
+                        send_pulses(q, module, pulse.to, Pulse::kLow);
                     }
                     else {
-                        send_pulses(q, module, pulse.to, true);
+                        send_pulses(q, module, pulse.to, Pulse::kHigh);
                     }
                     break;
                 }
                 case 'b': {
-                    send_pulses(q, module, pulse.to, pulse.high);
+                    send_pulses(q, module, pulse.to, pulse.type);
+                    break;
                 }
             }
         }
+
+        for (auto &[name, vec] : tracking) {
+            if (modules[name].on) {
+                std::cout << name << ' ' << i << std::endl;
+                vec.emplace_back(i);
+            }
+        }
+        for (auto [name, signal] : modules["cz"].mem) {
+            if (signal == Pulse::kHigh) {
+                std::cout << '1';
+            }
+            else {
+                std::cout << '0';
+            }
+        }
+        std::cout << std::endl;
     }
-    cout << cnt_high << '*' << cnt_low << " = " << cnt_high * 1LL * cnt_low << '\n';
+    cout << cnt_high << '*' << cnt_low << " = " << cnt_high * cnt_low << '\n';
+
+    for (auto &[name, vec] : tracking) {
+        std::cout << name;
+        for (auto i : vec) {
+            std::cout << ' ' << i;
+        }
+        std::cout << '\n';
+    }
+
+    std::ofstream file{"output.txt"};
+    file << "digraph mygraph {\n";
+
+    //nodes
+    for (auto &[name, module] : modules) {
+        file << enclose(name) << '\n';
+    }
+
+    // vertices
+    for (auto &[name, module] : modules)
+        for (auto to : module.cables) {
+            file << enclose(name) << " -> " << enclose(to) << std::endl;
+        }
+
+    file << "}" << std::endl;
 }
