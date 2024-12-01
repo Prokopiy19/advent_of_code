@@ -2,39 +2,40 @@
 #include <cstdlib>
 #include <iostream>
 #include <iterator>
-#include <unordered_map>
 #include <vector>
 
-std::vector<int> a, b;
-
-void silver() {
-    long long result = 0;
-    std::sort(a.begin(), a.end());
-    std::sort(b.begin(), b.end());
-    for (int i = 0; i < std::ssize(a); ++i) {
-        result += std::abs(a[i] - b[i]);
-    }
-    std::cout << "silver: " << result << std::endl;
-}
-
-void gold() {
-    std::unordered_map<int, int> counts;
-    for (int num : b) {
-        ++counts[num];
-    }
-    long long result = 0;
-    for (int num : a) {
-        result += num * counts[num];
-    }
-    std::cout << "gold: " << result << std::endl;
-}
-
 int main() {
-    int l, r;
-    while (std::cin >> l >> r) {
-        a.emplace_back(l);
-        b.emplace_back(r);
+    std::vector<int> l, r;
+    int x, y;
+    while (std::cin >> x >> y) {
+        l.emplace_back(x);
+        r.emplace_back(y);
     }
-    silver();
-    gold();
+
+    long long silver = 0;
+    std::sort(l.begin(), l.end());
+    std::sort(r.begin(), r.end());
+    for (int i = 0; i < std::ssize(l); ++i) {
+        silver += std::abs(l[i] - r[i]);
+    }
+    std::cout << "silver: " << silver << std::endl;
+
+    long long gold = 0;
+    auto lit = l.cbegin();
+    auto rit = r.cbegin();
+    while (lit != l.cend() && rit != r.cend()) {
+        while (rit != r.cend() && *lit > *rit) {
+            ++rit;
+        }
+        const auto rit0 = rit;
+        while (rit != r.cend() && *lit == *rit) {
+            ++rit;
+        }
+        const auto lit0 = lit;
+        while (lit != l.cend() && *lit == *lit0) {
+            ++lit;
+        }
+        gold += *lit0 * (lit - lit0) * (rit - rit0);
+    }
+    std::cout << "gold: " << gold << std::endl;
 }
