@@ -1,3 +1,4 @@
+#include <chrono>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -40,18 +41,24 @@ void solve(const std::vector<int> &nums, bool &s, bool &g) {
 }
 
 int main() {
-
+    std::chrono::nanoseconds parse_time{0};
+    std::chrono::nanoseconds solve_time{0};
     int silver = 0;
     int gold = 0;
     std::string line;
     std::vector<int> nums;
+    auto start = std::chrono::high_resolution_clock::now();
     while (std::getline(std::cin, line)) {
+
         nums.clear();
         std::istringstream record{line};
         int num;
         while (record >> num) {
             nums.emplace_back(num);
         }
+
+        auto parsed = std::chrono::high_resolution_clock::now();
+
         bool s = false;
         bool g = false;
         solve(nums, s, g);
@@ -61,7 +68,16 @@ int main() {
         }
         silver += s;
         gold += g;
+
+        auto solved = std::chrono::high_resolution_clock::now();
+
+        parse_time += parsed - start;
+        solve_time += solved - parsed;
+
+        start = solved;
     }
     std::cout << "silver: " << silver << '\n';
-    std::cout << "gold: " << gold << std::endl;
+    std::cout << "gold: " << gold << '\n';
+    std::cout << "parse time: " << std::chrono::duration_cast<std::chrono::milliseconds>(parse_time) << '\n';
+    std::cout << "solve time: " << std::chrono::duration_cast<std::chrono::milliseconds>(solve_time) << std::endl;
 }
