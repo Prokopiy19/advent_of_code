@@ -41,6 +41,8 @@ void solve(const std::vector<int> &nums, bool &s, bool &g) {
 }
 
 int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
     std::chrono::nanoseconds parse_time{0};
     std::chrono::nanoseconds solve_time{0};
     int silver = 0;
@@ -77,7 +79,7 @@ int main() {
         start = solved;
     }
     std::cout << "silver: " << silver << '\n';
-    std::cout << "gold: " << gold << '\n';
+    std::cout << "gold:   " << gold << '\n';
     std::cout << "parse time: " << std::chrono::duration_cast<std::chrono::milliseconds>(parse_time) << '\n';
     std::cout << "solve time: " << std::chrono::duration_cast<std::chrono::milliseconds>(solve_time) << std::endl;
 }
