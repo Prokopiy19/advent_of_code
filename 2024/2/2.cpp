@@ -1,9 +1,9 @@
+#include <algorithm>
 #include <chrono>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 bool checkDiff(int x, int y) {
     auto diff = y - x;
