@@ -53,7 +53,7 @@ int main() {
     while (std::getline(std::cin, line)) {
 
         nums.clear();
-        std::istringstream record{line};
+        std::istringstream record{std::move(line)};
         int num;
         while (record >> num) {
             nums.emplace_back(num);
@@ -77,6 +77,7 @@ int main() {
         solve_time += solved - parsed;
 
         start = solved;
+        line = std::move(record).str();
     }
     std::cout << "silver: " << silver << '\n';
     std::cout << "gold:   " << gold << '\n';
