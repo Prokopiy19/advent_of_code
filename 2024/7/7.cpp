@@ -1,57 +1,91 @@
+#include <charconv>
+#include <cstdint>
 #include <iostream>
 #include <iterator>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <vector>
 
 int binpow(int a, int n) {
     int res = 1;
     while (n) {
-        if (n & 1)
+        if (n % 2) {
             res *= a;
+        }
         a *= a;
-        n >>= 1;
+        n /= 2;
     }
     return res;
 }
 
-int count_digits(long long num) {
-    return std::to_string(num).size();
+long long f10(long long n) {
+    long long ret = 10;
+    while (ret <= n) {
+        ret *= 10;
+    }
+    return ret;
+}
+
+std::vector<std::int16_t> nums;
+
+void parse(std::string_view s) {
+    nums.clear();
+    int num;
+    auto p = s.data();
+    const auto last = s.data() + s.size();
+    std::from_chars_result result;
+    for (auto p = s.data(); p != last; p = result.ptr) {
+        result = std::from_chars(p + 1, last, num);
+        nums.emplace_back(num);
+    }
+}
+
+bool solve1(long long rhs, int i) {
+    if (i == 0) {
+        return nums[0] == rhs;
+    }
+    if (rhs - nums[i] >= 0 && solve1(rhs - nums[i], i - 1)) {
+        return true;
+    }
+    if (rhs % nums[i] == 0 && solve1(rhs / nums[i], i - 1)) {
+        return true;
+    }
+    return false;
+}
+
+
+bool solve2(long long rhs, int i) {
+    if (i == 0) {
+        return nums[0] == rhs;
+    }
+    if (rhs - nums[i] >= 0 && solve2(rhs - nums[i], i - 1)) {
+        return true;
+    }
+    if (rhs % nums[i] == 0 && solve2(rhs / nums[i], i - 1)) {
+        return true;
+    }
+    long long n10 = f10(nums[i]);
+    if (rhs % n10 == nums[i] && solve2(rhs / n10, i - 1)) {
+        return true;
+    }
+    return false;
 }
 
 int main() {
+    long long silver = 0;
     long long gold = 0;
-    std::vector<long long> nums;
     for (std::string line; std::getline(std::cin, line); ) {
-        std::istringstream record{line};
         long long lhs;
-        char c;
-        record >> lhs >> c;
-        nums.clear();
-        for (int num; record >> num; ) {
-            nums.emplace_back(num);
+        auto result = std::from_chars(line.c_str(), line.c_str() + line.size(), lhs);
+        parse(std::string_view{result.ptr + 1, line.c_str() + line.size()});
+        if (solve1(lhs, ssize(nums) - 1)) {
+            silver += lhs;
         }
-        unsigned lim = binpow(3, nums.size() - 1);
-        for (unsigned mask = 0; mask < lim; ++mask) {
-            unsigned tmp = mask;
-            long long rhs = nums[0];
-            for (int i = 1; i < std::ssize(nums); ++i) {
-                switch (mask % 3) {
-                    case 0: rhs *= nums[i]; break;
-                    case 1: rhs += nums[i]; break;
-                    case 2: rhs *= binpow(10, count_digits(nums[i])); rhs += nums[i]; break;
-                }
-                if (rhs > lhs) {
-                    break;
-                }
-                mask /= 3;
-            }
-            if (lhs == rhs) {
-                gold += lhs;
-                break;
-            }
-            mask = tmp;
+        if (solve2(lhs, ssize(nums) - 1)) {
+            gold += lhs;
         }
     }
-    std::cout << gold << std::endl;
+    std::cout << "silver: " << silver << std::endl;
+    std::cout << "gold:   " << gold << std::endl;
 }
