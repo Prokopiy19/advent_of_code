@@ -1,8 +1,6 @@
 #include <charconv>
-#include <cstdint>
 #include <iostream>
 #include <iterator>
-#include <sstream>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -27,7 +25,7 @@ long long f10(long long n) {
     return ret;
 }
 
-std::vector<std::int16_t> nums;
+std::vector<long long> nums;
 
 void parse(std::string_view s) {
     nums.clear();
@@ -59,14 +57,14 @@ bool solve2(long long rhs, int i) {
     if (i == 0) {
         return nums[0] == rhs;
     }
-    if (rhs - nums[i] >= 0 && solve2(rhs - nums[i], i - 1)) {
+    long long n10 = f10(nums[i]);
+    if (rhs % n10 == nums[i] && solve2(rhs / n10, i - 1)) {
+        return true;
+    }
+    if (rhs - nums[i] > 0 && solve2(rhs - nums[i], i - 1)) {
         return true;
     }
     if (rhs % nums[i] == 0 && solve2(rhs / nums[i], i - 1)) {
-        return true;
-    }
-    long long n10 = f10(nums[i]);
-    if (rhs % n10 == nums[i] && solve2(rhs / n10, i - 1)) {
         return true;
     }
     return false;
@@ -81,8 +79,8 @@ int main() {
         parse(std::string_view{result.ptr + 1, line.c_str() + line.size()});
         if (solve1(lhs, ssize(nums) - 1)) {
             silver += lhs;
-        }
-        if (solve2(lhs, ssize(nums) - 1)) {
+            gold += lhs;
+        } else if (solve2(lhs, ssize(nums) - 1)) {
             gold += lhs;
         }
     }
