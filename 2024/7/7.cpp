@@ -5,18 +5,6 @@
 #include <string_view>
 #include <vector>
 
-int binpow(int a, int n) {
-    int res = 1;
-    while (n) {
-        if (n % 2) {
-            res *= a;
-        }
-        a *= a;
-        n /= 2;
-    }
-    return res;
-}
-
 long long f10(long long n) {
     long long ret = 10;
     while (ret <= n) {
@@ -57,14 +45,14 @@ bool solve2(long long rhs, int i) {
     if (i == 0) {
         return nums[0] == rhs;
     }
-    long long n10 = f10(nums[i]);
-    if (rhs % n10 == nums[i] && solve2(rhs / n10, i - 1)) {
-        return true;
-    }
     if (rhs - nums[i] > 0 && solve2(rhs - nums[i], i - 1)) {
         return true;
     }
     if (rhs % nums[i] == 0 && solve2(rhs / nums[i], i - 1)) {
+        return true;
+    }
+    long long n10 = f10(nums[i]);
+    if (rhs % n10 == nums[i] && solve2(rhs / n10, i - 1)) {
         return true;
     }
     return false;
@@ -84,6 +72,6 @@ int main() {
             gold += lhs;
         }
     }
-    std::cout << "silver: " << silver << std::endl;
-    std::cout << "gold:   " << gold << std::endl;
+    std::cout << "silver: " << silver << '\n';
+    std::cout << "gold:   " << gold << '\n';
 }
