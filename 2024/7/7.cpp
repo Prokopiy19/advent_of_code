@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
-long long binpow(long long a, long long n) {
-    long long res = 1;
+int binpow(int a, int n) {
+    int res = 1;
     while (n) {
         if (n & 1)
             res *= a;
@@ -21,17 +21,18 @@ int count_digits(long long num) {
 
 int main() {
     long long gold = 0;
+    std::vector<long long> nums;
     for (std::string line; std::getline(std::cin, line); ) {
         std::istringstream record{line};
-        unsigned long long lhs;
-        std::string word;
-        record >> lhs >> word;
-        std::vector<long long> nums;
+        long long lhs;
+        char c;
+        record >> lhs >> c;
+        nums.clear();
         for (int num; record >> num; ) {
             nums.emplace_back(num);
         }
-        unsigned long long lim = binpow(3, nums.size() - 1);
-        for (unsigned long long mask = 0; mask < lim; ++mask) {
+        unsigned lim = binpow(3, nums.size() - 1);
+        for (unsigned mask = 0; mask < lim; ++mask) {
             unsigned tmp = mask;
             long long rhs = nums[0];
             for (int i = 1; i < std::ssize(nums); ++i) {
@@ -39,6 +40,9 @@ int main() {
                     case 0: rhs *= nums[i]; break;
                     case 1: rhs += nums[i]; break;
                     case 2: rhs *= binpow(10, count_digits(nums[i])); rhs += nums[i]; break;
+                }
+                if (rhs > lhs) {
+                    break;
                 }
                 mask /= 3;
             }
