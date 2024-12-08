@@ -1,4 +1,5 @@
 #include <iostream>
+#include <numeric>
 #include <sstream>
 #include <string>
 #include <unordered_map>
@@ -17,11 +18,15 @@ char board[N][N];
 
 int cnt = 0;
 
-void f(int x, int y) {
-    if (0 <= x && x < n && 0 <= y && y < n && board[x][y] != '#') {
-        board[x][y] = '#';
-        ++cnt;
+bool f(int x, int y) {
+    if (0 <= x && x < n && 0 <= y && y < n) {
+        if (board[x][y] != '#') {
+            board[x][y] = '#';
+            ++cnt;
+        }
+        return true;
     }
+    return false;
 }
 
 int main() {
@@ -44,8 +49,21 @@ int main() {
             for (int j = i+1; j < vec.size(); ++j) {
                 int dx = vec[j].x - vec[i].x;
                 int dy = vec[j].y - vec[i].y;
-                f(vec[i].x - dx, vec[i].y - dy);
-                f(vec[j].x + dx, vec[j].y + dy);
+                int g = std::gcd(dx, dy);
+                dx /= g;
+                dy /= g;
+                int x = vec[i].x;
+                int y = vec[i].y;
+                while (f(x, y)) {
+                    x -= dx;
+                    y -= dy;
+                }
+                x = vec[i].x;
+                y = vec[i].y;
+                while (f(x, y)) {
+                    x += dx;
+                    y += dy;
+                }
             }
         }
     }
