@@ -31,7 +31,7 @@ bool solve1(long long rhs, int i) {
     if (i == 0) {
         return nums[0] == rhs;
     }
-    if (rhs - nums[i] >= 0 && solve1(rhs - nums[i], i - 1)) {
+    if (rhs - nums[i] > 0 && solve1(rhs - nums[i], i - 1)) {
         return true;
     }
     if (rhs % nums[i] == 0 && solve1(rhs / nums[i], i - 1)) {
@@ -52,7 +52,7 @@ bool solve2(long long rhs, int i) {
         return true;
     }
     long long n10 = f10(nums[i]);
-    if (rhs % n10 == nums[i] && solve2(rhs / n10, i - 1)) {
+    if (rhs > n10 && rhs % n10 == nums[i] && solve2(rhs / n10, i - 1)) {
         return true;
     }
     return false;
