@@ -7,48 +7,42 @@ constexpr int N = 44;
 
 int n;
 char grid[N][N];
-std::int16_t vis[N][N]{};
-
-int silver = 0;
-int id = 1;
+std::int8_t dp[N][N];
 
 constexpr auto INF = std::numeric_limits<std::int8_t>::max();
 
-void dfs(int i, int j, char c) {
+int dfs(int i, int j, char c) {
     if (grid[i][j] != c) {
-        return;
+        return 0;
     }
-    if (vis[i][j] == id) {
-        return;
+    if (dp[i][j] < INF) {
+        return dp[i][j];
     }
     if (c == '9') {
-        if (vis[i][j] != id) {
-            ++silver;
-            vis[i][j] = id;
-        }
-        return;
+        return dp[i][j] = 1;
     }
-    vis[i][j] = id;
-    dfs(i - 1, j, c + 1);
-    dfs(i, j - 1, c + 1);
-    dfs(i, j + 1, c + 1);
-    dfs(i + 1, j, c + 1);
-    return;
+    int ret = 0;
+    ret += dfs(i - 1, j, c + 1);
+    ret += dfs(i, j - 1, c + 1);
+    ret += dfs(i, j + 1, c + 1);
+    ret += dfs(i + 1, j, c + 1);
+    return ret;
 }
 
 int main() {
     std::fill_n(&grid[0][0], N * N, '.');
+    std::fill_n(&dp[0][0], N * N, INF);
     std::string line;
     for (int i = 1; std::getline(std::cin, line); ++i) {
         std::copy(line.cbegin(), line.cend(), &grid[i][1]);
         n = std::ssize(line);
     }
+    int silver = 0;
     for (int i = 1; i <= n; ++i) {
         for (int j = 1; j <= n; ++j) {
             if (grid[i][j] == '0') {
-                dfs(i, j, '0');
-                ++id;
-                // std::cout << i << ' ' << j << ' ' << silver << '\n';
+                silver += dfs(i, j, '0');
+                std::cout << i << ' ' << j << ' ' << dfs(i, j, '0') << '\n';
             }
         }
     }
