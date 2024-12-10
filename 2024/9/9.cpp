@@ -26,7 +26,7 @@ int main() {
         std::vector<std::pair<int, int>> empty_spaces;
         for (int i = 0; i < std::ssize(line); ++i) {
             if (i % 2 == 0) {
-                blocks.emplace_back(std::size(filesystem), line[i] - '0');
+                blocks.emplace_back(std::ssize(filesystem), line[i] - '0');
                 for (int t = 0; t < line[i] - '0'; ++t) {
                     filesystem.emplace_back(i  / 2);
                 }
@@ -41,7 +41,7 @@ int main() {
         for (int i = std::ssize(blocks) - 1; i > 0; --i) {
             for (auto &[j, sz] : empty_spaces) {
                 if (j < blocks[i].first && sz >= blocks[i].second) {
-                    for (int x = 0; x < std::min(sz, blocks[i].second); ++x) {
+                    for (int x = 0; x < blocks[i].second; ++x) {
                         filesystem[j + x] = i;
                         filesystem[blocks[i].first + x] = kEmpty;
                     }
