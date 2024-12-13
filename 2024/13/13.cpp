@@ -3,8 +3,10 @@
 #include <iostream>
 #include <string>
 
-int main() {
-    int silver = 0;
+#define int long long
+
+signed main() {
+    int gold = 0;
     for (std::string line; std::getline(std::cin, line); ) {
         auto pos = line.find('X');
         int x1 = (line[pos+2] - '0') * 10 + line[pos+3] - '0';
@@ -25,23 +27,23 @@ int main() {
         std::from_chars(line.c_str() + pos + 2, line.c_str() + line.size(), y);
         std::getline(std::cin, line);
         
-        std::cout << x1 << ' ' << y1 << ' ' << x2 << ' ' << y2 << ' ' << x << ' ' << y << '\n';
-        
-        int min_cost = INT_MAX;
-        int i = 0;
-        for (int xx = 0; xx <= x; xx += x1, ++i) {
-            if ((x - xx) % x2 != 0) {
+        x += 10000000000000;
+        y += 10000000000000;
+
+
+        if ((x * y2 - x2 * y) % (x1 * y2 - y1 * x2) == 0) {
+            int n = (x * y2 - x2 * y) / (x1 * y2 - y1 * x2);
+            int dx = x - n * x1;
+            int dy = y - n * y1;
+            if (dx % x2 != 0 || dy % y2 != 0) {
                 continue;
             }
-            int k = (x - xx) / x2;
-            if (i * y1 + k * y2 != y) {
+            int m = dx / x2;
+            if (y1 * n + y2 * m != y) {
                 continue;
-            } 
-            min_cost = std::min(min_cost, 3 * i + k);
-        }
-        if (min_cost < INT_MAX) {
-            silver += min_cost;
+            }
+            gold += 3 * n + m;
         }
     }
-    std::cout << silver << '\n';
+    std::cout << gold << '\n';
 }
