@@ -113,7 +113,6 @@ int main() {
     }
     long long gold = 0;
     for (int i = 1; i < info.size(); ++i) {
-        std::cout << info[i].c << ": " << info[i].n << '*' << info[i].s << " = " << info[i].n * info[i].s << '\n';
         gold += info[i].n * info[i].s;
     }
     std::cout << "silver: " << silver << '\n';
