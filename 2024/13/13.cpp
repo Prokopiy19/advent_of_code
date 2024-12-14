@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <charconv>
 #include <iostream>
 #include <string>
@@ -29,7 +28,6 @@ signed main() {
         
         x += 10000000000000;
         y += 10000000000000;
-
 
         if ((x * y2 - x2 * y) % (x1 * y2 - y1 * x2) == 0) {
             int n = (x * y2 - x2 * y) / (x1 * y2 - y1 * x2);
