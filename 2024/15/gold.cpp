@@ -2,11 +2,9 @@
 #include <string>
 #include <unordered_map>
 
-constexpr int N = 101;
-
 int m;
 int n;
-char grid[N][N];
+char grid[3000][6000];
 
 struct Robot {
     int i;
@@ -33,15 +31,11 @@ bool testMove(int i, int j, Dir dir) {
     }
     grid[i][j] = grid[i][j+1] = '.';
     bool result = true;
-    if (isBox(ni, nj)) {
-        if (!testMove(ni, nj, dir)) {
-            result = false;
-        }
+    if (isBox(ni, nj) && !testMove(ni, nj, dir)) {
+        result = false;
     }
-    if (isBox(ni, nj + 1)) {
-        if (!testMove(ni, nj + 1, dir)) {
-            result = false;
-        }
+    if (isBox(ni, nj + 1) && !testMove(ni, nj + 1, dir)) {
+        result = false;
     }
     grid[i][j]   = '[';
     grid[i][j+1] = ']';
@@ -99,13 +93,14 @@ signed main() {
         n = j;
     }
     m = n / 2;
+    std::cout << m << ' ' << n << std::endl;
 
     std::string moves;
     while (std::cin >> line) {
         moves += line;
     }
     Robot robot;
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < m; ++i) {
         for (int j = 0; j < n; ++j) {
             if (grid[i][j] == '@') {
                 robot.i = i;
@@ -147,7 +142,7 @@ signed main() {
         printGrid(robot.i, robot.j);
     }
     long long gold = 0;
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < m; ++i) {
         for (int j = 0; j < n; ++j) {
             if (grid[i][j] == '[') {
                 gold += 100 * i + j;
