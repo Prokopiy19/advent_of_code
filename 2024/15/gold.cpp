@@ -1,11 +1,10 @@
-#include <algorithm>
 #include <iostream>
 #include <string>
 #include <unordered_map>
-#include <utility>
 
 constexpr int N = 101;
 
+int m;
 int n;
 char grid[N][N];
 
@@ -66,6 +65,18 @@ void moveBox(int i, int j, Dir dir) {
     grid[ni][nj+1] = ']';
 }
 
+void printGrid(int i, int j) {
+    // grid[i][j] = '@';
+    // for (int i = 0; i < m; ++i) {
+    //     for (int j = 0; j < n; ++j) {
+    //         std::cout << grid[i][j];
+    //     }
+    //     std::cout << '\n';
+    // }
+    // std::cout << '\n';
+    // grid[i][j] = '.';
+}
+
 signed main() {
     std::string line;
     for (int i = 0; std::getline(std::cin, line); ++i) {
@@ -87,6 +98,7 @@ signed main() {
         }
         n = j;
     }
+    m = n / 2;
 
     std::string moves;
     while (std::cin >> line) {
@@ -103,21 +115,13 @@ signed main() {
             }
         }
     }
+    printGrid(robot.i, robot.j);
+
     std::unordered_map<char, Dir> dirs;
     dirs['^'] = { .di =-1, .dj = 0 };
     dirs['>'] = { .di = 0, .dj = 1 };
     dirs['v'] = { .di = 1, .dj = 0 };
     dirs['<'] = { .di = 0, .dj =-1 };
-
-    grid[robot.i][robot.j] = '@';
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            std::cout << grid[i][j];
-        }
-        std::cout << '\n';
-    }
-    std::cout << '\n';
-    grid[robot.i][robot.j] = '.';
 
     for (char c : moves) {
         auto [di, dj] = dirs[c];
@@ -140,23 +144,15 @@ signed main() {
                 break;
             }
         }
-        // grid[robot.i][robot.j] = '@';
-        // for (int i = 0; i < n; ++i) {
-        //     for (int j = 0; j < n; ++j) {
-        //         std::cout << grid[i][j];
-        //     }
-        //     std::cout << '\n';
-        // }
-        // std::cout << '\n';
-        // grid[robot.i][robot.j] = '.';
+        printGrid(robot.i, robot.j);
     }
-    long long silver = 0;
+    long long gold = 0;
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
             if (grid[i][j] == '[') {
-                silver += 100 * i + j;
+                gold += 100 * i + j;
             }
         }
     }
-    std::cout << silver << '\n';
+    std::cout << gold << '\n';
 }
