@@ -1,10 +1,8 @@
 #include <algorithm>
 #include <cstdlib>
 #include <iostream>
-#include <iterator>
 #include <ostream>
 #include <queue>
-#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -93,13 +91,13 @@ int main() {
 
     bfs();
 
-    std::vector<int> silver;
+    std::vector<int> cheats1;
 
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j + 2 < n; ++j) {
             if (grid[i][j] != '#' && grid[i][j+1] == '#' && grid[i][j+2] != '#'
                     && dp[i][j] < INT_MAX && dp[i][j+2] < INT_MAX) {
-                silver.emplace_back(std::abs(dp[i][j] - dp[i][j+2]) - 2);
+                cheats1.emplace_back(std::abs(dp[i][j] - dp[i][j+2]) - 2);
             }
         }
     }
@@ -108,30 +106,25 @@ int main() {
         for (int i = 0; i + 2 < n; ++i) {
             if (grid[i][j] != '#' && grid[i+1][j] == '#' && grid[i+2][j] != '#'
                     && dp[i][j] < INT_MAX && dp[i+2][j] < INT_MAX) {
-                silver.emplace_back(std::abs(dp[i][j] - dp[i+2][j]) - 2);
+                cheats1.emplace_back(std::abs(dp[i][j] - dp[i+2][j]) - 2);
             }
         }
     }
 
 
-    std::sort(silver.rbegin(), silver.rend());
+    std::sort(cheats1.rbegin(), cheats1.rend());
 
-    // for (int i : silver) {
-    //     std::cout << i << '\n';
-    // }
+    int silver = 0;
 
-    int cnt = 0;
-
-    for (int i : silver) {
+    for (int i : cheats1) {
         if (i >= 100) {
-            cnt++;
+            silver++;
         }
     }
-    std::cout << cnt << '\n';
 
     int gold = 0;
 
-    std::unordered_map<int, int> cheats;
+    std::unordered_map<int, int> cheats2;
 
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
@@ -144,7 +137,7 @@ int main() {
                         if (dp[ii][jj] == INT_MAX) {
                             continue;
                         } 
-                        cheats[std::abs(dp[i][j] - dp[ii][jj]) - dist]++;
+                        cheats2[std::abs(dp[i][j] - dp[ii][jj]) - dist]++;
                         if (std::abs(dp[i][j] - dp[ii][jj]) - dist >= 100) {
                             ++gold;
                         }
@@ -153,15 +146,16 @@ int main() {
             }
         }
     }
-    std::vector<std::pair<int, int>> output;
-    for (auto [i, cnt] : cheats) {
-        if (i >= 50) {
-            output.emplace_back(i, cnt / 2);
-        }
-    }
-    std::sort(output.begin(), output.end());
-    for (auto [x, y] : output) {
-        std::cout << x << ' ' << y << '\n';
-    }
-    std::cout << "gold: " << gold / 2 << '\n';
+    // std::vector<std::pair<int, int>> output;
+    // for (auto [i, cnt] : cheats) {
+    //     if (i >= 50) {
+    //         output.emplace_back(i, cnt / 2);
+    //     }
+    // }
+    // std::sort(output.begin(), output.end());
+    // for (auto [x, y] : output) {
+    //     std::cout << x << ' ' << y << '\n';
+    // }
+    std::cout << "silver: " << silver << '\n';
+    std::cout << "gold:   " << gold / 2 << '\n';
 }
