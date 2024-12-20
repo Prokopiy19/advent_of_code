@@ -6,6 +6,7 @@
 #include <queue>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -127,4 +128,40 @@ int main() {
         }
     }
     std::cout << cnt << '\n';
+
+    int gold = 0;
+
+    std::unordered_map<int, int> cheats;
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            if (grid[i][j] == '#' || dp[i][j] == INT_MAX) {
+                continue;
+            }
+            for (int ii = std::max(0, i-20); ii <= std::min(n-1, i+20); ++ii) {
+                for (int jj = std::max(0, j-20); jj <= std::min(n-1, j+20); ++jj) {
+                    if (int dist = std::abs(i - ii) + std::abs(j - jj); dist <= 20 && grid[ii][jj] != '#') {
+                        if (dp[ii][jj] == INT_MAX) {
+                            continue;
+                        } 
+                        cheats[std::abs(dp[i][j] - dp[ii][jj]) - dist]++;
+                        if (std::abs(dp[i][j] - dp[ii][jj]) - dist >= 100) {
+                            ++gold;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    std::vector<std::pair<int, int>> output;
+    for (auto [i, cnt] : cheats) {
+        if (i >= 50) {
+            output.emplace_back(i, cnt / 2);
+        }
+    }
+    std::sort(output.begin(), output.end());
+    for (auto [x, y] : output) {
+        std::cout << x << ' ' << y << '\n';
+    }
+    std::cout << "gold: " << gold / 2 << '\n';
 }
