@@ -10,8 +10,8 @@
 #include <string_view>
 #include <unordered_map>
 
-constexpr int kSilverRobots = 4;
-constexpr int kGoldRobots = 27;
+constexpr int kSilverRobots = 3;
+constexpr int kGoldRobots = 26;
 
 struct Coord {
     int x, y;
@@ -61,7 +61,7 @@ long long dfs(char from, char to, std::uint8_t n);
 long long solve(std::string_view s, std::uint8_t n) {
     long long ret = 0;
     for (int i = 0; i + 1 < s.size(); ++i) {
-        ret += dfs(s[i], s[i+1], n-1);
+        ret += dfs(s[i], s[i+1], n);
     }
     return ret;
 }
@@ -84,13 +84,13 @@ long long dfs(char from, char to, std::uint8_t n) {
         std::string s = "A";
         s.append(std::abs(dy), c);
         s += 'A';
-        return memo[key] = solve(s, n);
+        return memo[key] = solve(s, n-1);
     } else if (dy == 0) {
         char c = (dx < 0) ? '<' : '>';
         std::string s = "A";
         s.append(std::abs(dx), c);
         s += 'A';
-        return memo[key] = solve(s, n);
+        return memo[key] = solve(s, n-1);
     } else if (dx != 0 && dy != 0) {
         char cx = (dx < 0) ? '<' : '>';
         char cy = (dy < 0) ? 'v' : '^';
@@ -101,7 +101,7 @@ long long dfs(char from, char to, std::uint8_t n) {
             variant1.append(std::abs(dx), cx);
             variant1.append(std::abs(dy), cy);
             variant1 += 'A';
-            ret = std::min(ret, solve(variant1, n));
+            ret = std::min(ret, solve(variant1, n-1));
         }
 
         if (!(x == -2 && ty == 0)) {
@@ -109,12 +109,12 @@ long long dfs(char from, char to, std::uint8_t n) {
             variant2.append(std::abs(dy), cy);
             variant2.append(std::abs(dx), cx);
             variant2 += 'A';
-            ret = std::min(ret, solve(variant2, n));
+            ret = std::min(ret, solve(variant2, n-1));
         }
 
         return memo[key] = ret;
     }
-    return memo[key] = solve("AA", n);
+    return memo[key] = solve("AA", n-1);
 }
 
 int main() {
